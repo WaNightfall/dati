@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>姜晓涵的生日会 · 通关小测验</title>
+  <style>
+    :root{
+      --bg:#24154f;
+      --panel:rgba(126,111,176,.42);
+      --line:rgba(210,204,255,.25);
+      --text:#f8f5ff;
+      --muted:#c9c2e6;
+      --hot:#8b70ff;
+      --ice:#d8dcff;
+      --gold:#f2d28b;
+      --ok:#8ff2d0;
+      --bad:#ff99b2;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:#120b2c;color:var(--text);font-family:"Trebuchet MS","Microsoft YaHei",sans-serif}
+    body{display:flex;justify-content:center}
+    .phone{
+      position:relative;
+      width:min(100vw,430px);
+      min-height:100svh;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 72% 8%,rgba(225,220,255,.28),transparent 4%),
+        radial-gradient(circle at 22% 38%,rgba(126,111,255,.22),transparent 12%),
+        radial-gradient(circle at 84% 78%,rgba(116,81,255,.22),transparent 15%),
+        linear-gradient(165deg,#41366d 0%,#261658 42%,#4b2a87 100%);
+      box-shadow:0 0 60px rgba(0,0,0,.45);
+    }
+    .phone:before{
+      content:"";
+      position:absolute;inset:0;
+      opacity:.28;
+      background-image:
+        linear-gradient(115deg,transparent 0 44%,rgba(255,255,255,.09) 45% 47%,transparent 48%),
+        radial-gradient(circle,rgba(255,255,255,.9) 0 1px,transparent 2px);
+      background-size:120px 120px,86px 86px;
+      animation:drift 16s linear infinite;
+      pointer-events:none;
+    }
+    .orb{position:absolute;border-radius:999px;filter:blur(2px);background:rgba(211,210,255,.65);box-shadow:0 0 18px rgba(205,202,255,.9);animation:float 5s ease-in-out infinite}
+    .o1{width:8px;height:18px;left:40px;top:58px;transform:rotate(-25deg)}
+    .o2{width:7px;height:16px;right:44px;top:52px;transform:rotate(-35deg);animation-delay:-1.5s}
+    .o3{width:14px;height:7px;left:28px;top:320px;transform:rotate(-18deg);animation-delay:-2.4s}
+    .star{position:absolute;color:#fff;text-shadow:0 0 12px #fff;animation:twinkle 2.6s ease-in-out infinite}
+    .s1{left:34px;top:190px}.s2{right:36px;top:222px;animation-delay:-1s}.s3{left:68px;bottom:130px;animation-delay:-.7s}.s4{right:22px;bottom:52px;animation-delay:-1.6s}
+    main{position:relative;z-index:1;padding:38px 28px 48px}
+    .screen{display:none;animation:rise .55s ease both}
+    .screen.active{display:block}
+    .pill{
+      margin:16px auto 30px;
+      width:86%;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:11px 18px;
+      color:#dcd8ff;
+      text-align:center;
+      letter-spacing:10px;
+      font-size:14px;
+      background:rgba(255,255,255,.06);
+    }
+    h1{
+      margin:0 0 28px;
+      text-align:center;
+      font-size:48px;
+      line-height:1.22;
+      letter-spacing:4px;
+      color:#eef0ff;
+      text-shadow:0 0 22px rgba(154,134,255,.75);
+    }
+    h1 span,.gradient{background:linear-gradient(90deg,#fff,#b2a4ff,#806aff);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .photo{
+      height: 460px;
+      border-radius: 30px;
+      border: 1px solid rgba(232,229,255,.42);
+      overflow:hidden;
+      background:#1a0f2e url("photo.jpg") center/cover no-repeat;
+      box-shadow:0 18px 44px rgba(0,0,0,.35);
+      position:relative;
+    }
+    .mission,.card{
+      margin-top:24px;
+      padding:24px;
+      border-radius:28px;
+      background:linear-gradient(145deg,rgba(18,13,40,.78),rgba(95,76,145,.42));
+      border:1px solid var(--line);
+      box-shadow:0 22px 48px rgba(0,0,0,.25),inset 0 0 24px rgba(255,255,255,.04);
+    }
+    .mission{text-align:center;font-size:23px;font-weight:900;line-height:1.8}
+    button{
+      width:100%;
+      border:0;
+      cursor:pointer;
+      color:white;
+      font:900 24px/1 "Microsoft YaHei",sans-serif;
+      border-radius:999px;
+      padding:22px 26px;
+      background:linear-gradient(100deg,#4a279d,#8d7cff 68%,#e5eaff);
+      box-shadow:0 0 30px rgba(127,104,255,.5);
+      transition:.2s ease;
+    }
+    button:active{transform:scale(.97)}
+    .start{margin:30px auto 0;width:74%;display:block}
+    .quiz-head{text-align:center;margin:46px 0 22px;color:#ddd8ff;letter-spacing:8px}
+    .progress{display:flex;gap:10px;justify-content:center;margin-bottom:28px}
+    .dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.3);transition:.2s}
+    .dot.on{background:#fff;box-shadow:0 0 10px rgba(255,255,255,.8)}
+    .tag{display:inline-block;padding:8px 18px;border:1px solid rgba(242,210,139,.55);border-radius:999px;background:rgba(242,210,139,.14);color:#fff;font-size:15px}
+    .question{font-size:29px;line-height:1.25;margin:22px 0 10px;font-weight:900}
+    .hint{color:var(--muted);font-size:17px;margin-bottom:20px}
+    .options{display:grid;gap:13px}
+    .option{
+      display:flex;align-items:center;gap:16px;
+      min-height:68px;
+      padding:14px 18px;
+      border-radius:999px;
+      border:2px solid rgba(223,218,255,.18);
+      background:rgba(255,255,255,.08);
+      color:#e9e6ff;
+      font-size:22px;
+      transition:.18s ease;
+      cursor:pointer;
+    }
+    .option .letter{
+      width:34px;height:34px;display:grid;place-items:center;flex:0 0 auto;
+      border-radius:50%;
+      border:2px solid rgba(224,220,255,.38);
+      color:#a996ff;
+      font-weight:900;
+      font-size:16px;
+    }
+    .option.selected{border-color:#9c88ff;background:rgba(139,112,255,.26);box-shadow:0 0 18px rgba(139,112,255,.22)}
+    .option.selected .letter{background:#9c88ff;border-color:#9c88ff;color:#fff}
+    .option.correct{border-color:rgba(143,242,208,.85);background:rgba(143,242,208,.15)}
+    .option.correct .letter{background:rgba(143,242,208,.85);border-color:rgba(143,242,208,.85);color:#fff}
+    .option.wrong{border-color:rgba(255,153,178,.9);background:rgba(255,153,178,.16);animation:shake .35s ease}
+    .option.wrong .letter{background:rgba(255,153,178,.9);border-color:rgba(255,153,178,.9);color:#fff}
+    .quiz-list{display:grid;gap:20px;padding-bottom:20px}
+    .submit-bar{position:sticky;bottom:0;padding:16px 0 4px;background:linear-gradient(180deg,transparent,rgba(38,22,88,.95) 30%);z-index:2}
+    .submit-btn{
+      width:100%;
+      border:0;cursor:pointer;color:white;
+      font:900 22px/1 "Microsoft YaHei",sans-serif;
+      border-radius:999px;
+      padding:20px 26px;
+      background:linear-gradient(100deg,#4a279d,#8d7cff 68%,#e5eaff);
+      box-shadow:0 0 30px rgba(127,104,255,.5);
+      transition:.2s ease;
+    }
+    .submit-btn:active{transform:scale(.97)}
+    .result-card{text-align:center;margin-top:24px}
+    .result-card h2{font-size:37px;line-height:1.2;margin:0 0 18px}
+    .score{font-size:24px;color:#fff;margin:0 0 22px}.score b{font-size:48px;color:#dde1ff}
+    .copy{color:#d9d3ef;font-size:20px;line-height:1.55}
+    .name-row{display:flex;gap:10px;margin:20px 0 10px}
+    .result-actions{display:grid;gap:12px;margin-top:20px}
+    .ghost-btn{
+      width:100%;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.1);
+      color:#e9e6ff;
+      font:900 20px/1 "Microsoft YaHei",sans-serif;
+      border-radius:999px;
+      padding:18px 26px;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+    .ghost-btn:active{transform:scale(.97)}
+    input{
+      width:100%;
+      border:1px solid rgba(255,255,255,.2);
+      background:rgba(255,255,255,.1);
+      color:#fff;
+      border-radius:18px;
+      padding:16px;
+      font-size:18px;
+      outline:none;
+    }
+    input::placeholder{color:#bfb8df}
+    .small-btn{width:auto;font-size:18px;padding:16px 18px;white-space:nowrap}
+    .leader{margin-top:18px;text-align:left}
+    .leader h3{margin:0 0 12px;text-align:center;font-size:22px}
+    .seats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .seat{
+      min-height:52px;
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.08);
+      color:#eeeaff;
+    }
+    .seat em{font-style:normal;color:var(--gold);font-weight:900;margin-right:6px}
+    .empty{color:#a99fcf}
+    .trip-head{text-align:center;padding:42px 0 22px}
+    .trip-title{font-size:26px;font-weight:900;margin-bottom:8px}
+    .trip-sub{color:#d8d2f5;font-size:16px;letter-spacing:2px}
+    .trip-card{margin-top:18px}
+    .trip-section{margin-bottom:22px}
+    .trip-section:last-child{margin-bottom:0}
+    .trip-section h3{
+      margin:0 0 16px;
+      font-size:18px;
+      display:flex;align-items:center;gap:10px;
+    }
+    .timeline{display:grid;gap:12px}
+    .tl-item{
+      display:flex;align-items:center;gap:16px;
+      padding:14px 18px;
+      border-radius:18px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .tl-time{
+      flex:0 0 auto;
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.18);
+      font-weight:900;
+      font-size:17px;
+      letter-spacing:1px;
+      white-space:nowrap;
+    }
+    .tl-text{font-size:18px;color:#eeeaff}
+    .divider{
+      height:1px;
+      margin:18px 0;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);
+    }
+    .end-card{
+      margin-top:22px;
+      text-align:center;
+      padding:28px 24px;
+      border-radius:28px;
+      background:linear-gradient(145deg,rgba(18,13,40,.78),rgba(95,76,145,.42));
+      border:1px solid var(--line);
+    }
+    .end-date{font-size:42px;font-weight:900;margin-bottom:10px;background:linear-gradient(90deg,#fff,#b2a4ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .end-text1{font-size:20px;margin-bottom:8px}
+    .end-text2{color:#c9c2e6;font-size:17px;letter-spacing:4px}
+    .back-btn{
+      margin:22px auto 0;
+      width:60%;
+      display:block;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.1);
+      color:#e9e6ff;
+      font:900 18px/1 "Microsoft YaHei",sans-serif;
+      border-radius:999px;
+      padding:16px 20px;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+    .back-btn:active{transform:scale(.97)}
+    .toast{
+      position:fixed;left:50%;bottom:28px;z-index:9;
+      width:min(360px,calc(100vw - 40px));
+      transform:translateX(-50%) translateY(20px);
+      opacity:0;pointer-events:none;
+      padding:14px 18px;border-radius:999px;text-align:center;
+      background:rgba(18,13,40,.88);border:1px solid var(--line);
+      transition:.25s ease;
+    }
+    .toast.show{opacity:1;transform:translateX(-50%)}
+    .confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+    .confetti i{position:absolute;top:-20px;width:8px;height:14px;border-radius:2px;background:var(--gold);animation:fall 2.8s linear forwards}
+    @keyframes drift{to{background-position:120px 120px,86px 86px}}
+    @keyframes float{50%{translate:0 -18px;opacity:.45}}
+    @keyframes twinkle{50%{scale:1.7;opacity:.45}}
+    @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+    @keyframes fill{from{width:0}to{width:100%}}
+    @keyframes shake{25%{translate:7px}50%{translate:-7px}75%{translate:4px}}
+    @keyframes fall{to{transform:translateY(110vh) rotate(480deg);opacity:0}}
+    @media (max-width:380px){
+      main{padding:30px 20px 40px}
+      h1{font-size:42px}
+      .photo{height:390px}
+      .question{font-size:25px}
+      .option{font-size:21px}
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i>
+    <i class="star s1">✦</i><i class="star s2">✦</i><i class="star s3">✦</i><i class="star s4">✦</i>
+    <div class="confetti" id="confetti"></div>
+    <main>
+      <section class="screen active" id="home">
+        <div class="pill">BIRTHDAY INVITATION</div>
+        <h1>姜晓涵的<br><span>生日会</span></h1>
+        <div class="photo" aria-label="生日会主视觉"></div>
+        <div class="mission">🎂 完成小测验<br>💌 解锁生日会时间与地点</div>
+        <button class="start" id="startBtn">开始答题 ✨</button>
+      </section>
+
+      <section class="screen" id="quiz">
+        <div class="quiz-head">✦ 通关小测验 ✦</div>
+        <div class="progress" id="progress"></div>
+        <div class="quiz-list" id="quizList"></div>
+        <div class="submit-bar">
+          <button class="submit-btn" id="submitBtn">提交答案 ✨</button>
+        </div>
+      </section>
+
+      <section class="screen" id="result">
+        <div class="card result-card">
+          <h2>你真的很了解<span class="gradient">晓涵</span>！</h2>
+          <p class="score">答对了 <b id="rightNum">0</b> 道，答错了 <b id="wrongNum">0</b> 道</p>
+          <p class="copy" id="resultCopy"></p>
+          <div id="winnerBox">
+            <div class="name-row">
+              <input id="nameInput" maxlength="8" placeholder="满分通关！写下你的名字" />
+              <button class="small-btn" id="saveNameBtn">入座</button>
+            </div>
+          </div>
+          <div class="result-actions">
+            <button class="ghost-btn" id="retryBtn">再试一次</button>
+            <button id="tripBtn">查看行程</button>
+          </div>
+          <div class="leader">
+            <h3>✨ 星光座位表</h3>
+            <div class="seats" id="seats"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="trip">
+        <div class="trip-head">
+          <div class="trip-title">姜晓涵的生日会 · 行程安排</div>
+          <div class="trip-sub">7月18日 · COZY MUSIC LAB（上海利园店）</div>
+        </div>
+        <div class="card trip-card">
+          <div class="trip-section">
+            <h3>🍽️ 入场 &amp; 用餐</h3>
+            <div class="timeline">
+              <div class="tl-item">
+                <span class="tl-time">19:00</span>
+                <span class="tl-text">入场时间</span>
+              </div>
+              <div class="tl-item">
+                <span class="tl-time">19:00-20:30</span>
+                <span class="tl-text">吃饭拍照</span>
+              </div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="trip-section">
+            <h3>🎤 演出时间 · 四位歌手 四场演出</h3>
+            <div class="timeline">
+              <div class="tl-item">
+                <span class="tl-time">20:30-21:10</span>
+                <span class="tl-text">个人弹唱</span>
+              </div>
+              <div class="tl-item">
+                <span class="tl-time">21:30-22:10</span>
+                <span class="tl-text">乐队</span>
+              </div>
+              <div class="tl-item">
+                <span class="tl-time">22:30-23:10</span>
+                <span class="tl-text">乐队</span>
+              </div>
+              <div class="tl-item">
+                <span class="tl-time">23:30-00:10</span>
+                <span class="tl-text">乐队</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="end-card">
+          <div class="end-date">7月18日</div>
+          <div class="end-text1">期待与你共度这个盛夏之夜</div>
+          <div class="end-text2">一期一会 不见不散！✨</div>
+        </div>
+        <button class="back-btn" id="backHomeBtn">返回首页</button>
+      </section>
+    </main>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const allQuestions = [
+      { type:"单选题", title:"晓涵最喜欢的颜色是什么？", hint:"选择一个正确答案", answer:["c"], options:{a:"粉色", b:"绿色", c:"紫色"} },
+      { type:"多选题", title:"晓涵现在最想去的地方？", hint:"多选 · 需要全部选对哦", answer:["a","b","c","d"], options:{a:"南极", b:"埃及", c:"清迈", d:"韩国"} },
+      { type:"单选题", title:"晓涵最喜欢的数字是什么？", hint:"选择一个正确答案", answer:["b"], options:{a:"6", b:"7", c:"9"} },
+      { type:"多选题", title:"晓涵的梦想是？", hint:"多选 · 需要全部选对哦", answer:["a","b","c","d"], options:{a:"环游世界", b:"财富自由", c:"有一份愿意奋斗的事业", d:"可以随时躺平"} },
+      { type:"单选题", title:"晓涵最想养的宠物是？", hint:"选择一个正确答案", answer:["c"], options:{a:"桃花", b:"豆豆", c:"边牧"} }
+    ];
+    const $ = id => document.getElementById(id);
+    let questions = [];
+    let answers = [];
+    let submitted = false;
+
+    $("startBtn").onclick = () => {
+      startQuiz();
+      show("quiz");
+    };
+    $("submitBtn").onclick = submitQuiz;
+    $("saveNameBtn").onclick = saveName;
+    $("tripBtn").onclick = () => show("trip");
+    $("backHomeBtn").onclick = () => show("home");
+    $("retryBtn").onclick = () => {
+      startQuiz();
+      show("quiz");
+    };
+
+    function startQuiz(){
+      questions = pickRandom(allQuestions, 3);
+      answers = questions.map(() => []);
+      submitted = false;
+      renderQuiz();
+    }
+    function pickRandom(arr, n){
+      const shuffled = [...arr].sort(() => Math.random() - .5);
+      return shuffled.slice(0, n);
+    }
+    function show(id){
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      $(id).classList.add("active");
+      if (id === "result") { renderSeats(); }
+      if (id === "trip") { confetti(); }
+      window.scrollTo(0, 0);
+    }
+    function renderQuiz(){
+      $("progress").innerHTML = questions.map((_,i) =>
+        `<i class="dot ${answers[i].length ? "on" : ""}"></i>`
+      ).join("");
+      $("quizList").innerHTML = questions.map((q, i) => `
+        <div class="card q-card" data-idx="${i}">
+          <span class="tag">${q.type}</span>
+          <div class="question">Q${i + 1}. ${q.title}</div>
+          <div class="hint">${q.hint}</div>
+          <div class="options">
+            ${Object.entries(q.options).map(([key,text]) => `
+              <div class="option ${answers[i].includes(key) ? "selected" : ""}" data-idx="${i}" data-key="${key}">
+                <span class="letter">${key.toUpperCase()}</span><span>${text}</span>
+              </div>`).join("")}
+          </div>
+        </div>`).join("");
+      document.querySelectorAll(".option").forEach(el => {
+        el.onclick = () => choose(+el.dataset.idx, el.dataset.key);
+      });
+    }
+    function choose(idx, key){
+      if (submitted) return;
+      const q = questions[idx];
+      if (q.answer.length === 1) {
+        answers[idx] = [key];
+      } else {
+        answers[idx] = answers[idx].includes(key)
+          ? answers[idx].filter(x => x !== key)
+          : [...answers[idx], key];
+      }
+      renderQuiz();
+      const card = document.querySelector(`.q-card[data-idx="${idx}"]`);
+      if (card) card.scrollIntoView({ behavior:"smooth", block:"center" });
+    }
+    function same(a,b){ return [...a].sort().join("") === [...b].sort().join(""); }
+    function submitQuiz(){
+      const unanswered = answers.filter(a => !a.length).length;
+      if (unanswered > 0) return toast(`还有 ${unanswered} 道题没答哦 ✨`);
+      submitted = true;
+      let right = 0;
+      questions.forEach((q, i) => {
+        const ok = same(answers[i], q.answer);
+        if (ok) right++;
+        const card = document.querySelector(`.q-card[data-idx="${i}"]`);
+        if (!card) return;
+        card.querySelectorAll(".option").forEach(el => {
+          const key = el.dataset.key;
+          if (q.answer.includes(key)) el.classList.add("correct");
+          if (!ok && answers[i].includes(key) && !q.answer.includes(key)) el.classList.add("wrong");
+        });
+      });
+      finish(right);
+    }
+    function finish(right){
+      $("rightNum").textContent = right;
+      $("wrongNum").textContent = questions.length - right;
+      $("resultCopy").innerHTML = right === questions.length
+        ? "星光为你点亮通往生日会的邀请函，快去查看最终行程吧 ✨"
+        : "再试一次就能解锁满分座位啦，晓涵等你通关 ✨";
+      $("winnerBox").style.display = right === questions.length ? "block" : "none";
+      setTimeout(() => {
+        show("result");
+        if (right === questions.length) confetti();
+      }, 900);
+    }
+    function saveName(){
+      const name = $("nameInput").value.trim();
+      if (!name) return toast("先写名字再入座呀");
+      const seats = getSeats();
+      if (seats.some(x => x.name === name)) return toast("这个名字已经在座位表里啦");
+      seats.push({ name, time: Date.now() });
+      localStorage.setItem("xiaohan-birthday-seats", JSON.stringify(seats));
+      $("nameInput").value = "";
+      renderSeats();
+      toast(`第 ${seats.length} 位通关，入座成功 ✨`);
+    }
+    function getSeats(){
+      try { return JSON.parse(localStorage.getItem("xiaohan-birthday-seats")) || []; }
+      catch { return []; }
+    }
+    function renderSeats(){
+      const seats = getSeats();
+      $("seats").innerHTML = Array.from({length:8}, (_,i) => {
+        const s = seats[i];
+        return `<div class="seat ${s ? "" : "empty"}"><em>${i + 1}</em>${s ? s.name : "待入座"}</div>`;
+      }).join("");
+    }
+    function toast(text){
+      $("toast").textContent = text;
+      $("toast").classList.add("show");
+      clearTimeout(window.toastTimer);
+      window.toastTimer = setTimeout(() => $("toast").classList.remove("show"), 1800);
+    }
+    function confetti(){
+      $("confetti").innerHTML = Array.from({length:34}, (_,i) =>
+        `<i style="left:${Math.random()*100}%;animation-delay:${Math.random()*1.2}s;background:${["#f2d28b","#d8dcff","#8b70ff","#ffb8d2"][i%4]}"></i>`
+      ).join("");
+      setTimeout(() => $("confetti").innerHTML = "", 3300);
+    }
+  </script>
+</body>
+</html>
