@@ -49,7 +49,7 @@
     .o3{width:14px;height:7px;left:28px;top:320px;transform:rotate(-18deg);animation-delay:-2.4s}
     .star{position:absolute;color:#fff;text-shadow:0 0 12px #fff;animation:twinkle 2.6s ease-in-out infinite}
     .s1{left:34px;top:190px}.s2{right:36px;top:222px;animation-delay:-1s}.s3{left:68px;bottom:130px;animation-delay:-.7s}.s4{right:22px;bottom:52px;animation-delay:-1.6s}
-    main{position:relative;z-index:1;padding:20px 22px 28px;height:100svh;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+    main{position:relative;z-index:1;padding:24px 22px;height:100svh;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
     .screen{display:none;animation:rise .55s ease both}
     .screen.active{display:block}
     .pill{
@@ -327,7 +327,7 @@
       100%{transform:translateY(-110vh) rotate(30deg);opacity:0}
     }
     @media (max-width:380px){
-      main{padding:16px 18px 24px}
+      main{padding:20px 18px}
       h1{font-size:30px}
       .photo{height:240px}
       .question{font-size:19px}
@@ -371,14 +371,14 @@
               <input id="nameInput" maxlength="8" placeholder="写下你的名字" />
             </div>
           </div>
-          <div class="result-actions">
-            <button class="ghost-btn" id="retryBtn">再试一次</button>
-            <button id="tripBtn">查看行程</button>
-          </div>
-          <div class="leader">
+          <div class="leader" id="leaderBox">
             <h3>✨ 星光座位表</h3>
             <div class="seat-confirm" id="seatConfirmText"></div>
             <div class="seats-wrap" id="seatsWrap"></div>
+          </div>
+          <div class="result-actions">
+            <button class="ghost-btn" id="retryBtn">再试一次</button>
+            <button id="tripBtn">查看行程</button>
           </div>
         </div>
       </section>
@@ -460,7 +460,13 @@
       show("quiz");
     };
     $("submitBtn").onclick = submitQuiz;
-    $("tripBtn").onclick = () => show("trip");
+    $("tripBtn").onclick = () => {
+      const name = $("nameInput").value.trim();
+      if (name && !seatsData.some(s => s && s.name === name)) {
+        return toast("请先入座再查看行程哦 ✨");
+      }
+      show("trip");
+    };
     $("backHomeBtn").onclick = () => show("home");
     $("retryBtn").onclick = () => {
       startQuiz();
@@ -541,18 +547,22 @@
       finish(right);
     }
     function finish(right){
+      const allRight = right === questions.length;
       $("rightNum").textContent = right;
       $("wrongNum").textContent = questions.length - right;
-      $("resultCopy").innerHTML = right === questions.length
+      $("resultCopy").innerHTML = allRight
         ? "星光为你点亮通往生日会的邀请函，快去查看最终行程吧 ✨"
         : "再试一次就能解锁满分座位啦，<br>晓涵等你通关 ✨";
-      $("winnerBox").style.display = right === questions.length ? "block" : "none";
+      $("winnerBox").style.display = allRight ? "block" : "none";
+      $("leaderBox").style.display = allRight ? "block" : "none";
+      $("retryBtn").style.display = allRight ? "none" : "";
+      $("tripBtn").style.display = allRight ? "" : "none";
       pendingName = "";
       selectedSeat = -1;
       $("seatConfirmText").textContent = "";
       setTimeout(() => {
         show("result");
-        if (right === questions.length) confetti();
+        if (allRight) confetti();
       }, 300);
     }
     function confirmSeat(idx){
